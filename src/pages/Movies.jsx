@@ -5,6 +5,7 @@ import Movie from "../components/common/Movie";
 import { TMDB_IMAGE_URL } from "../../constants.js";
 import Pagination from "../components/common/Pagination.jsx";
 import { handleScroll } from "../utils/handleScrol.js";
+import MovieSkeleton from "../components/common/movieSkeleton.jsx";
 
 const Movies = () => {
   const [movieData, setMovieData] = useState([]);
@@ -72,16 +73,18 @@ const Movies = () => {
           </div>
           {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
-            {movieData?.map((movie) => (
-              <Link to={`/movie/${movie.id}`} key={movie.id} className="p-2">
-                <Movie
-                  date={movie.release_date}
-                  img={`${TMDB_IMAGE_URL}${movie.backdrop_path}`}
-                  title={filter === "tv?media_type=tv" ? movie.original_name : movie.original_title}
-                  rating={movie.vote_average}
-                />
-              </Link>
-            ))}
+            {isLoading
+              ? Array.from({ length: 20 }).map((_, index) => <MovieSkeleton key={index} />)
+              : movieData?.map((movie) => (
+                  <Link to={`/movie/${movie.id}`} key={movie.id} className="p-2">
+                    <Movie
+                      date={movie.release_date}
+                      img={`${TMDB_IMAGE_URL}${movie.backdrop_path}`}
+                      title={filter === "tv?media_type=tv" ? movie.original_name : movie.original_title}
+                      rating={movie.vote_average}
+                    />
+                  </Link>
+                ))}
           </div>
         </div>
         <div className="flex justify-center md:block md:ml-[33px]">

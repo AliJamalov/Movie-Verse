@@ -1,14 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GiFilmSpool } from "react-icons/gi";
-import search from "../../assets/icons/search.svg";
 import burger from "../../assets/icons/burger.svg";
+import axiosInstance from "../../utils/axios";
+import SearchResults from "../common/SearchResults";
+import SearchInput from "../common/SearchBar";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const fetchMoviesBySearch = async () => {
+    if (searchQuery.trim() === "" || searchQuery.length < 3) {
+      setMovies([]);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await axiosInstance.get(`/search/movie?query=${searchQuery}`);
+      setMovies(response.data.results.slice(0, 8));
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchMoviesBySearch();
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const resetSearch = () => {
+    setMovies([]);
+    setSearchQuery("");
+  };
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
   };
 
   return (
@@ -21,17 +60,7 @@ const Header = () => {
           </Link>
           <div className="flex md:order-2">
             {/* Десктоп поиск */}
-            <div className="relative hidden md:block">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <img src={search} className="w-5 h-5" />
-              </div>
-              <input
-                type="text"
-                id="search-navbar"
-                className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search..."
-              />
-            </div>
+            <SearchInput value={searchQuery} onChange={handleSearchChange} className="hidden md:block" />
 
             {/* Кнопка бургер-меню */}
             <button
@@ -39,7 +68,7 @@ const Header = () => {
               onClick={toggleMenu}
               className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
             >
-              <img src={burger} className="w-5 h-5" />
+              <img src={burger} className="w-5 h-5" alt="Menu" />
             </button>
           </div>
 
@@ -51,19 +80,7 @@ const Header = () => {
             id="navbar-search"
           >
             {/* Поиск для мобильных */}
-            {isMenuOpen && (
-              <div className="relative mt-3 md:hidden">
-                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                  <img src={search} className="w-5 h-5" />
-                </div>
-                <input
-                  type="text"
-                  id="search-navbar-mobile"
-                  className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Search..."
-                />
-              </div>
-            )}
+            {isMenuOpen && <SearchInput value={searchQuery} onChange={handleSearchChange} className="mt-3 md:hidden" />}
 
             {/* Навигационное меню */}
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
@@ -87,6 +104,12 @@ const Header = () => {
           </div>
         </div>
       </nav>
+      {/* Search results */}
+      {movies.length > 0 && (
+        <div className="absolute top-15 w-[300px] max-h-[400px] overflow-y-auto z-50 right-3 shadow-lg">
+          <SearchResults resetSearch={resetSearch} movies={movies} />
+        </div>
+      )}
     </header>
   );
 };

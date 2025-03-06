@@ -41,6 +41,7 @@ const MoviesSection = ({ title, endpoint, bgImg }) => {
           <h1 className="text-white font-bold text-2xl md:text-5xl">
             {title.split("").map((char, index) => (
               <motion.span
+                className="text-[18px] md:text-3xl"
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

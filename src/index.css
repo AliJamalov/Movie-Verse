@@ -7,3 +7,30 @@ body {
   overflow-x: hidden;
   max-width: 100%;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffdd00;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffb700;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ffdd00 transparent;
+}
+
+body {
+  -ms-overflow-style: none;
+}

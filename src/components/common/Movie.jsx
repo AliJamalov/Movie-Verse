@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Movie = ({ date, rating, img, title }) => {
+  const [isLoading, setIsLoading] = useState(true);
   return (
     <div className="max-w-sm rounded-lg mx-auto md:mx-0 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
       <img
-        className="w-full h-64 object-cover transition-transform duration-300 transform hover:scale-110"
+        className={`w-full h-64 object-cover transition-opacity duration-500 ${
+          isLoading ? "opacity-0" : "opacity-100"
+        }`}
         src={img}
         alt={title}
+        onLoad={() => setIsLoading(false)}
       />
       <div className="p-4 bg-gray-800 text-white">
         <p className="text-[22px] font-medium mb-2 truncate">{title}</p>

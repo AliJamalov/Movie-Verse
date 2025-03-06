@@ -138,7 +138,7 @@ const HeroSection = () => {
           viewport={{ once: true, amount: 0.5 }}
           className="flex items-center gap-4 mt-[20px]"
         >
-          <motion.div variants={itemVariantsHeroSection} className="flex items-center gap-2">
+          <motion.div variants={itemVariantsHeroSection} className="hidden md:flex items-center gap-2">
             <IoCalendarNumber color="yellow" size={20} />
             <p className="text-white font-medium">{movieData?.release_date}</p>
           </motion.div>

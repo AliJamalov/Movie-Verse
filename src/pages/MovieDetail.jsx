@@ -12,6 +12,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { handleScroll } from "../utils/handleScrol.js";
+import notExist from "../assets/images/not-exist.jfif";
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -38,14 +39,11 @@ const MovieDetail = () => {
   };
 
   const fetchSimilarMovies = async () => {
-    setIsLoading(true);
     try {
       const response = await axiosInstance.get(`/movie/${id}/similar`);
       setSimilarMovies(response.data?.results.slice(0, 8));
     } catch (error) {
       console.log("error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -62,11 +60,15 @@ const MovieDetail = () => {
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
             {/* Image */}
             <div className="shrink-0 max-w-md lg:max-w-lg mx-auto mb-6 lg:mb-0">
-              <img
-                src={`${TMDB_IMAGE_URL}${movie?.backdrop_path}`}
-                alt={movie?.original_title}
-                className="w-full h-auto rounded-lg shadow-lg"
-              />
+              {isLoading ? (
+                <div className="md:w-[450px] h-[250px] animate-pulse bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 rounded-lg shadow-lg"></div>
+              ) : (
+                <img
+                  src={movie?.backdrop_path ? `${TMDB_IMAGE_URL}${movie.backdrop_path}` : notExist}
+                  alt={movie?.original_title}
+                  className="w-full h-auto rounded-lg shadow-lg"
+                />
+              )}
             </div>
 
             <div className="mt-6 sm:mt-8 lg:mt-0">

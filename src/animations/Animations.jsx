@@ -83,7 +83,7 @@ export const AnimatedButtonShowAll = () => {
       initial="hidden"
       whileInView="visible" // Анимация будет происходить, когда кнопка станет видимой
       viewport={{ once: true, amount: 0.5 }} // Срабатывает, когда кнопка на 50% в зоне видимости
-      className="text-white cursor-pointer bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300 font-medium rounded-full text-sm px-3 py-2 md:px-5 md:py-3"
+      className="text-white cursor-pointer bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300 font-medium rounded-full text-sm px-2 py-1 md:px-5 md:py-3"
     >
       Show all
     </motion.button>
