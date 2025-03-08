@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axios";
+import axiosTmdbApi from "../../utils/axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -15,7 +15,7 @@ const MoviesSection = ({ title, endpoint, bgImg }) => {
 
   const fetchMoviesData = async () => {
     try {
-      const response = await axiosInstance.get(endpoint);
+      const response = await axiosTmdbApi.get(endpoint);
       setMoviesData(response.data?.results.slice(0, 8));
     } catch (error) {
       console.log("Error:", error);
@@ -52,7 +52,7 @@ const MoviesSection = ({ title, endpoint, bgImg }) => {
               </motion.span>
             ))}
           </h1>
-          <Link to={"/movies"}>
+          <Link to={`movies${endpoint}`}>
             <AnimatedButtonShowAll />
           </Link>
         </div>

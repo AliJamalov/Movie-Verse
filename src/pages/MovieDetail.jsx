@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
-import axiosInstance from "../utils/axios";
+import axiosTmdbApi from "../utils/axios";
 import { TMDB_IMAGE_URL } from "../../constants.js";
 import { YOUTUBE_EMBED_URL } from "../../constants.js";
 import { IoCalendarNumber } from "react-icons/io5";
@@ -24,9 +24,9 @@ const MovieDetail = () => {
   const fetchMovieById = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get(`/movie/${id}`);
+      const response = await axiosTmdbApi.get(`/movie/${id}`);
       setMovie(response.data);
-      const videoResponse = await axiosInstance.get(`/movie/${id}/videos`);
+      const videoResponse = await axiosTmdbApi.get(`/movie/${id}/videos`);
       const trailer = videoResponse.data.results.find((video) => video.type === "Trailer" && video.site === "YouTube");
       if (trailer) {
         setVideoKey(trailer.key);
@@ -40,7 +40,7 @@ const MovieDetail = () => {
 
   const fetchSimilarMovies = async () => {
     try {
-      const response = await axiosInstance.get(`/movie/${id}/similar`);
+      const response = await axiosTmdbApi.get(`/movie/${id}/similar`);
       setSimilarMovies(response.data?.results.slice(0, 8));
     } catch (error) {
       console.log("error:", error);

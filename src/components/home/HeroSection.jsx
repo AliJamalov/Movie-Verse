@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axios";
+import axiosTmdbApi from "../../utils/axios";
 import { PiSpinnerBallThin } from "react-icons/pi";
 import { IoCalendarNumber } from "react-icons/io5";
 import { MdOutlineAccessTime } from "react-icons/md";
@@ -14,39 +14,7 @@ import { AnimatedButtonHeroSection } from "../../animations/Animations";
 import { AnimatedButtonHeroSection2 } from "../../animations/Animations";
 import { motion } from "framer-motion";
 import { getRandomMovie } from "../../utils/getRandomMovie";
-
-const movies = [
-  { id: 550 },
-  { id: 278 },
-  { id: 238 },
-  { id: 680 },
-  { id: 155 },
-  { id: 13 },
-  { id: 120 },
-  { id: 122 },
-  { id: 424 },
-  { id: 550988 },
-  { id: 372058 },
-  { id: 603 },
-  { id: 497 },
-  { id: 807 },
-  { id: 27205 },
-  { id: 871 },
-  { id: 557 },
-  { id: 111 },
-  { id: 287 },
-  { id: 19404 },
-  { id: 14 },
-  { id: 863 },
-  { id: 315 },
-  { id: 465 },
-  { id: 3 },
-  { id: 31357 },
-  { id: 245 },
-  { id: 353 },
-  { id: 181 },
-  { id: 901 },
-];
+import { movies } from "../../../constants";
 
 const HeroSection = () => {
   const [movieData, setMovieData] = useState({});
@@ -62,9 +30,9 @@ const HeroSection = () => {
   const fetchMovieData = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get(`/movie/${movieId}`);
+      const response = await axiosTmdbApi.get(`/movie/${movieId}`);
       setMovieData(response.data);
-      const videoResponse = await axiosInstance.get(`/movie/${movieId}/videos`);
+      const videoResponse = await axiosTmdbApi.get(`/movie/${movieId}/videos`);
       const trailer = videoResponse.data.results.find((video) => video.type === "Trailer" && video.site === "YouTube");
       if (trailer) {
         setVideoKey(trailer.key);

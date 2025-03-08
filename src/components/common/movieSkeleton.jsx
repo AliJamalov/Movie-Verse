@@ -2,7 +2,7 @@ import React from "react";
 
 const MovieSkeleton = () => {
   return (
-    <div className="max-w-sm rounded-lg mx-auto md:mx-0 overflow-hidden shadow-lg animate-pulse">
+    <div className="w-full rounded-lg mx-auto md:mx-0 overflow-hidden shadow-lg animate-pulse">
       {/* Image Placeholder */}
       <div className="w-full h-64 bg-gray-700"></div>
 
