@@ -5,7 +5,7 @@ import Header from "./components/layout/Header";
 import Movies from "./pages/Movies";
 import MovieDetail from "./pages/MovieDetail";
 import Login from "./pages/Login";
-import Signup from "./pages/signup";
+import Signup from "./pages/Signup";
 import { useAuthStore } from "./stores/authStore";
 import { CgSpinner } from "react-icons/cg";
 import { Toaster } from "react-hot-toast";
