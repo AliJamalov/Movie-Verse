@@ -6,6 +6,7 @@ import { TMDB_IMAGE_URL } from "../../constants.js";
 import { YOUTUBE_EMBED_URL } from "../../constants.js";
 import { IoCalendarNumber } from "react-icons/io5";
 import { MdOutlineAccessTime } from "react-icons/md";
+import { CgSpinner } from "react-icons/cg";
 import Movie from "../components/common/Movie.jsx";
 import { sliderSettings } from "../../constants.js";
 import Slider from "react-slick";
@@ -13,9 +14,11 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { handleScroll } from "../utils/handleScrol.js";
 import notExist from "../assets/images/not-exist.jfif";
+import { useWishlistStore } from "../stores/wishlistStore.js";
 
 const MovieDetail = () => {
   const { id } = useParams();
+  const { addToWishlist, addLoading } = useWishlistStore();
   const [movie, setMovie] = useState({});
   const [similarMovies, setSimilarMovies] = useState([]);
   const [videoKey, setVideoKey] = useState(null);
@@ -45,6 +48,10 @@ const MovieDetail = () => {
     } catch (error) {
       console.log("error:", error);
     }
+  };
+
+  const handleAddToWishlist = (id) => {
+    addToWishlist(id);
   };
 
   useEffect(() => {
@@ -112,9 +119,14 @@ const MovieDetail = () => {
               </div>
 
               <div className="mt-6 sm:mt-8">
-                <button className="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 bg-yellow-400 rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:border-yellow-600 transition-all duration-300">
+                <button
+                  onClick={() => handleAddToWishlist(movie.id)}
+                  disabled={addLoading}
+                  className="flex cursor-pointer min-w-[150px] items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 bg-yellow-400 rounded-lg border border-yellow-500 hover:bg-yellow-500 hover:border-yellow-600 transition-all duration-300"
+                >
                   <AiOutlineHeart className="w-5 h-5 -ms-2 me-2 text-gray-900" />
-                  Add to favorites
+
+                  {addLoading ? <CgSpinner size={20} className="animate-spin" /> : "Add to favorites"}
                 </button>
               </div>
 

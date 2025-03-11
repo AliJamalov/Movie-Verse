@@ -6,6 +6,7 @@ import Movies from "./pages/Movies";
 import MovieDetail from "./pages/MovieDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Wishlist from "./pages/Wishlist";
 import { useAuthStore } from "./stores/authStore";
 import { CgSpinner } from "react-icons/cg";
 import { Toaster } from "react-hot-toast";
@@ -33,7 +34,8 @@ const App = () => {
         <Route path="/movies/:endpoint?/:subEndpoint?" element={<Movies />} />
         <Route path="/movie/:id" element={<MovieDetail />} />
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
       <Toaster />
     </>

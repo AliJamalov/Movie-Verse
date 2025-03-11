@@ -9,6 +9,7 @@ import { sliderSettings } from "../../../constants";
 import { motion } from "framer-motion";
 import { AnimatedButtonShowAll } from "../../animations/Animations";
 import { Link } from "react-router-dom";
+import { preventLinkNavigation } from "../../utils/preventLinkNavigation";
 
 const MoviesSection = ({ title, endpoint, bgImg }) => {
   const [moviesData, setMoviesData] = useState([]);
@@ -59,12 +60,20 @@ const MoviesSection = ({ title, endpoint, bgImg }) => {
         <div>
           <Slider {...sliderSettings}>
             {moviesData?.map((movie) => (
-              <Link to={`/movie/${movie.id}`} key={movie.id} className="p-2">
+              <Link
+                onClick={(e) => {
+                  preventLinkNavigation(e);
+                }}
+                to={`/movie/${movie.id}`}
+                key={movie.id}
+                className="p-2"
+              >
                 <Movie
                   date={movie.release_date}
                   img={`${TMDB_IMAGE_URL}${movie.backdrop_path}`}
                   title={movie.original_title}
                   rating={movie.vote_average}
+                  id={movie.id}
                 />
               </Link>
             ))}

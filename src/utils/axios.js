@@ -12,6 +12,9 @@ const axiosTmdbApi = axios.create({
 export default axiosTmdbApi;
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL:
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000/api"
+      : "https://movieverse-server.onrender.com/api",
   withCredentials: true,
 });

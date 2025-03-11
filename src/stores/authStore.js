@@ -9,6 +9,24 @@ export const useAuthStore = create((set) => ({
   loginLoading: false,
   loginMessage: null,
 
+  signupLoading: false,
+  signupMessage: null,
+
+  signup: async (fullName, email, password) => {
+    set({ signupLoading: true });
+    try {
+      const response = await axiosInstance.post("/auth/signup", { fullName, email, password });
+      set({ user: response.data.user });
+      set({ signupMessage: response.data.message });
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      set({ signupMessage: error.response.data.message });
+    } finally {
+      set({ signupLoading: false });
+    }
+  },
+
   login: async (email, password) => {
     set({ loginLoading: true });
     try {

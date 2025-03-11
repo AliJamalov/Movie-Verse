@@ -6,6 +6,7 @@ import { TMDB_IMAGE_URL } from "../../constants.js";
 import Pagination from "../components/common/Pagination.jsx";
 import { handleScroll } from "../utils/handleScrol.js";
 import MovieSkeleton from "../components/common/movieSkeleton.jsx";
+import { preventLinkNavigation } from "../utils/preventLinkNavigation.js";
 
 const Movies = () => {
   const { endpoint, subEndpoint } = useParams();
@@ -114,12 +115,20 @@ const Movies = () => {
             {isLoading
               ? Array.from({ length: 20 }).map((_, index) => <MovieSkeleton key={index} />)
               : movieData?.map((movie) => (
-                  <Link to={`/movie/${movie.id}`} key={movie.id} className="p-2">
+                  <Link
+                    onClick={(e) => {
+                      preventLinkNavigation(e);
+                    }}
+                    to={`/movie/${movie.id}`}
+                    key={movie.id}
+                    className="p-2"
+                  >
                     <Movie
                       date={movie.release_date}
                       img={`${TMDB_IMAGE_URL}${movie.backdrop_path}`}
                       title={filter === "tv?media_type=tv" ? movie.original_name : movie.original_title}
                       rating={movie.vote_average}
+                      id={movie.id}
                     />
                   </Link>
                 ))}
