@@ -1,36 +1,61 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axiosTmdbApi from "../utils/axios";
+import { axiosInstance } from "../utils/axios";
 import { TMDB_IMAGE_URL } from "../../constants.js";
 import { YOUTUBE_EMBED_URL } from "../../constants.js";
 import { IoCalendarNumber } from "react-icons/io5";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { CgSpinner } from "react-icons/cg";
-import Movie from "../components/common/Movie.jsx";
-import { sliderSettings } from "../../constants.js";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { handleScroll } from "../utils/handleScrol.js";
 import notExist from "../assets/images/not-exist.jfif";
 import { useWishlistStore } from "../stores/wishlistStore.js";
+import SimilarMovies from "../components/movieDetail/SimilarMovies.jsx";
+import AddCommentInput from "../components/movieDetail/addCommentInput.jsx";
+import Comments from "../components/movieDetail/Comments.jsx";
+import { useAuthStore } from "../stores/authStore.js";
 
 const MovieDetail = () => {
+  const { user } = useAuthStore();
   const { id } = useParams();
   const { addToWishlist, addLoading } = useWishlistStore();
   const [movie, setMovie] = useState({});
   const [similarMovies, setSimilarMovies] = useState([]);
   const [videoKey, setVideoKey] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [commentOwner, setCommentOwner] = useState(false);
+
+  const fetchComments = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(`/comments/${id}`);
+      setComments(response.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchMovieById = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosTmdbApi.get(`/movie/${id}`);
-      setMovie(response.data);
-      const videoResponse = await axiosTmdbApi.get(`/movie/${id}/videos`);
+      // Выполняем оба запроса параллельно
+      const [movieResponse, videoResponse] = await Promise.all([
+        axiosTmdbApi.get(`/movie/${id}`),
+        axiosTmdbApi.get(`/movie/${id}/videos`),
+      ]);
+
+      setMovie(movieResponse.data);
+
       const trailer = videoResponse.data.results.find((video) => video.type === "Trailer" && video.site === "YouTube");
+
       if (trailer) {
         setVideoKey(trailer.key);
       }
@@ -57,8 +82,18 @@ const MovieDetail = () => {
   useEffect(() => {
     fetchMovieById();
     fetchSimilarMovies();
+    fetchComments();
     handleScroll();
+    setComments([]);
   }, [id]);
+
+  useEffect(() => {
+    if (user && comments.length > 0) {
+      setCommentOwner(comments.some((comment) => comment?.userId?._id === user?._id));
+    } else {
+      setCommentOwner(false);
+    }
+  }, [user, comments]);
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black">
@@ -150,26 +185,18 @@ const MovieDetail = () => {
             </div>
           )}
 
+          <AddCommentInput fetchComments={fetchComments} id={id} />
+          <Comments
+            loading={loading}
+            showComments={showComments}
+            setShowComments={setShowComments}
+            comments={comments}
+            fetchComments={fetchComments}
+            commentOwner={commentOwner}
+          />
+
           {/* Similar Movies Section */}
-          <div className="mt-12 px-4 2xl:px-0">
-            <h2 className="text-white font-bold text-2xl mb-6">Similar Movies</h2>
-            {similarMovies?.length > 0 ? (
-              <Slider {...sliderSettings}>
-                {similarMovies.map((movie) => (
-                  <Link to={`/movie/${movie.id}`} key={movie.id} className="p-2">
-                    <Movie
-                      date={movie?.release_date}
-                      img={`${TMDB_IMAGE_URL}${movie?.backdrop_path}`}
-                      title={movie?.original_title}
-                      rating={movie?.vote_average}
-                    />
-                  </Link>
-                ))}
-              </Slider>
-            ) : (
-              <p className="text-white text-center">No similar movies found</p>
-            )}
-          </div>
+          <SimilarMovies similarMovies={similarMovies} />
         </div>
       </section>
     </div>
