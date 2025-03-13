@@ -14,7 +14,7 @@ import { handleScroll } from "../utils/handleScrol.js";
 import notExist from "../assets/images/not-exist.jfif";
 import { useWishlistStore } from "../stores/wishlistStore.js";
 import SimilarMovies from "../components/movieDetail/SimilarMovies.jsx";
-import AddCommentInput from "../components/movieDetail/addCommentInput.jsx";
+import AddCommentInput from "../components/movieDetail/AddCommentInput.jsx";
 import Comments from "../components/movieDetail/Comments.jsx";
 import { useAuthStore } from "../stores/authStore.js";
 
@@ -184,7 +184,6 @@ const MovieDetail = () => {
               </div>
             </div>
           )}
-
           <AddCommentInput fetchComments={fetchComments} id={id} />
           <Comments
             loading={loading}
